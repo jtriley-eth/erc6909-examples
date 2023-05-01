@@ -62,3 +62,32 @@ flowchart TD
     ps --> p
     sh --> s
 ```
+
+## [Transfer Library](src/ERC6909TransferLib.sol)
+
+Transfer Helper Library
+
+### API:
+
+Transfer an `amount` of an `id` on an `erc6909` contract to the `receiver` from the current address.
+
+```solidity
+function transfer(
+    address erc6909,
+    address receiver,
+    uint256 id,
+    uint256 amount
+);
+```
+
+Transfer an `amount` of an `id` on an `erc6909` contract from the `sender` to the `receiver`.
+
+```solidity
+function transferFrom(
+    address erc6909,
+    address sender,
+    address receiver,
+    uint256 id,
+    uint256 amount
+);
+```

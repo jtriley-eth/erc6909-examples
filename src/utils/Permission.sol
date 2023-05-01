@@ -12,12 +12,12 @@ using {
     requireSupplyHandler,
     setAdmin,
     setSupplyHandler,
-    setSupplyHandler
-} for Permission;
+    setPriceSetter
+} for Permission global;
 
 // --- Errors & Constants ---
 
-error Unauthorized(address account, uint256 permission);
+error Unauthorized(uint256 permission);
 uint256 constant ADMIN_BIT = 255;
 uint256 constant SUPPLY_HANDLER_BIT = 254;
 uint256 constant PRICE_SETTER_BIT = 253;
@@ -40,18 +40,18 @@ function isSupplyHandler(Permission permission) pure returns (bool) {
     return __hasPermission(permission, SUPPLY_HANDLER_BIT);
 }
 
-function requireAdmin(Permission permission, address account) pure {
-    if (!isAdmin(permission)) revert Unauthorized(account, ADMIN_BIT);
+function requireAdmin(Permission permission) pure {
+    if (!isAdmin(permission)) revert Unauthorized(ADMIN_BIT);
 }
 
-function requirePriceSetter(Permission permission, address account) pure {
+function requirePriceSetter(Permission permission) pure {
     if (!isPriceSetter(permission))
-        revert Unauthorized(account, PRICE_SETTER_BIT);
+        revert Unauthorized(PRICE_SETTER_BIT);
 }
 
-function requireSupplyHandler(Permission permission, address account) pure {
+function requireSupplyHandler(Permission permission) pure {
     if (!isSupplyHandler(permission))
-        revert Unauthorized(account, SUPPLY_HANDLER_BIT);
+        revert Unauthorized(SUPPLY_HANDLER_BIT);
 }
 
 function setAdmin(Permission permission, bool value) pure returns (Permission) {

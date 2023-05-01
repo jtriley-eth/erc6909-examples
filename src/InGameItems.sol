@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "lib/ERC-6909/src//ERC6909.sol";
+import "lib/ERC-6909/src/ERC6909Metadata.sol";
 import {Permission, newPermission} from "src/utils/Permission.sol";
 
-contract InGameItems is ERC6909 {
+contract InGameItems is ERC6909Metadata {
     error CannotSwapMainForMain();
 
     event RegisteredItem(uint256 indexed id, uint8 decimals, uint256 price);
@@ -18,15 +18,15 @@ contract InGameItems is ERC6909 {
 
     constructor() {
         permissions[msg.sender] = newPermission().setAdmin(true);
-        registerItem(decimals, 0);
+        registerItem(0, 0);
     }
 
-    function registerItem(uint8 decimals, uint256 price) public {
+    function registerItem(uint8 _decimals, uint256 price) public {
         permissions[msg.sender].requireAdmin();
         uint256 id = currencyIdCounter++;
-        decimals[id] = decimals;
+        decimals[id] = _decimals;
         prices[id] = price;
-        emit RegisteredItem(id, decimals, price);
+        emit RegisteredItem(id, _decimals, price);
     }
 
     function sell(uint256 id, uint256 amount) public {
@@ -45,10 +45,10 @@ contract InGameItems is ERC6909 {
         emit Transfer(msg.sender, address(0), main, amount * prices[id]);
     }
 
-    function updateDecimals(uint256 id, uint8 decimals) public {
+    function updateDecimals(uint256 id, uint8 _decimals) public {
         permissions[msg.sender].requireSupplyHandler();
-        decimals[id] = decimals;
-        emit UpdatedDecimals(id, decimals);
+        decimals[id] = _decimals;
+        emit UpdatedDecimals(id, _decimals);
     }
 
     function updateprice(uint256 id, uint256 price) public {
@@ -59,11 +59,11 @@ contract InGameItems is ERC6909 {
 
     function setSupplyHandler(address account, bool value) public {
         permissions[msg.sender].requireAdmin();
-        permissions[account].setSupplyHandler(value);
+        permissions[account] = permissions[account].setSupplyHandler(value);
     }
 
     function setPriceSetter(address account, bool value) public {
         permissions[msg.sender].requireAdmin();
-        permissions[account].setPriceSetter(value);
+        permissions[account] = permissions[account].setPriceSetter(value);
     }
 }

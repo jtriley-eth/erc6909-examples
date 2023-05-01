@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.19;
 
-import "lib/ERC-6909/src/ERC6909.sol";
+import "lib/ERC-6909/src/ERC6909Metadata.sol";
 import "src/interfaces/IERC20Metadata.sol";
 import "src/interfaces/IERC721Metadata.sol";
 import "src/interfaces/IERC1155Metadata.sol";
 import "src/interfaces/IERC1155Receiver.sol";
 
-contract AnyWrapper is ERC6909, IERC1155Receiver {
+contract AnyWrapper is ERC6909Metadata, IERC1155Receiver {
     error AlreadyRegistered(uint256 localId);
     error NotRegistered(uint256 localId);
     error ERC20TransferFailed(address token, uint256 amount);
@@ -19,7 +19,7 @@ contract AnyWrapper is ERC6909, IERC1155Receiver {
 
     mapping(uint256 localId => bool registered) public registry;
 
-    function regsiterERC20(address token) public {
+    function registerERC20(address token) public {
         uint256 localId = uint256(uint160(token));
         if (registry[localId]) revert AlreadyRegistered(localId);
         registry[localId] = true;
